@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <drawable name="main_act_keyboard_background">@mipmap/ic_spiderdroid</drawable>
+</resources>

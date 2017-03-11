@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+ <selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:state_pressed="true">
+        <shape
+            android:shape="rectangle">
+            <!--["rectangle" | "oval" | "line" | "ring"]-->
+            <corners android:radius="20dp" />
+            <padding
+                android:left="@dimen/shape_default_padding"
+                android:top="@dimen/shape_default_padding"
+                android:right="@dimen/shape_default_padding"
+                android:bottom="@dimen/shape_default_padding"
+                />
+            <solid android:color="@color/item_background_translucent" />
+            <stroke
+                android:width="2dp"
+                android:color="@color/item_background_opaque" />
+        </shape>
+    </item>
+    <item >
+        <shape
+            android:shape="rectangle">
+            <!--["rectangle" | "oval" | "line" | "ring"]-->
+            <corners android:radius="20dp" />
+            <padding
+                android:left="@dimen/shape_default_padding"
+                android:top="@dimen/shape_default_padding"
+                android:right="@dimen/shape_default_padding"
+                android:bottom="@dimen/shape_default_padding"
+                />
+            <solid android:color="@color/colorPrimary" />
+            <stroke
+                android:width="2dp"
+                android:color="@color/colorPrimaryDark"
+                />
+            <!--android:dashGap="1dp"-->
+            <!--android:dashWidth="2dp"-->
+        </shape>
+    </item>
+</selector>

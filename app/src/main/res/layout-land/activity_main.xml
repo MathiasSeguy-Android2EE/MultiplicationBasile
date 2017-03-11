@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.android2ee.basile.multiplication.view.MainActivity">
+
+    <TextView
+        style="@style/textview_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/mainact_max_multiplication_value"
+        android:textAppearance="?android:textAppearanceLarge" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <Switch
+            android:textOn="@string/mainact_switch_positive"
+            android:textOff="@string/mainact_switch_negative"
+            android:text="@string/mainact_switch_question"
+            android:layout_width="wrap_content"
+            android:layout_height="92dp"
+            android:id="@+id/swtThisTableOnly"
+            android:showText="true"
+            android:switchTextAppearance="@style/TextAppearance.AppCompat"
+            android:checked="false" />
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:foregroundGravity="center">
+            <ImageView
+                android:layout_width="285dp"
+                android:layout_height="285dp"
+                android:src="@drawable/main_act_keyboard_background"/>
+
+            <include layout="@layout/keyboard"
+                android:visibility="visible" />
+        </FrameLayout>
+
+        <Button
+            android:id="@+id/btnStart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/background_shape"
+            android:text="@string/mainact_start" />
+    </LinearLayout>
+</LinearLayout>

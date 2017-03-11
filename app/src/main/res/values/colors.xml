@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="shape_default_stroke">#d4d4d4</color>
+    <color name="shape_default_solid">#d4d4d4</color>
+    <color name="item_background_translucent">#999e9c9c</color>
+    <color name="item_background_opaque">#5fd5def2</color>
+
+    <color name="seek_bar_second_start">#990000FF</color>
+    <color name="seek_bar_second_center">#9900FF00</color>
+    <color name="seek_bar_second_end">#99FF0000</color>
+
+    <color name="seek_bar_progress_center">#99f2d603</color>
+    <color name="seek_bar_progress_start">#B9059705</color>
+    <color name="seek_bar_progress_end">#059705</color>
+
+    <color name="seek_bar_background_end">#99ff0000</color>
+    <color name="seek_bar_background_start">#FF0000</color>
+</resources>

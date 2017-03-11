@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/tblKeyboard"
+    android:gravity="center"
+    >
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/btn0"
+            style="@style/btn_keyboard_shrinked"
+            android:text="0"
+            />
+        <Button
+            android:id="@+id/btn1"
+            style="@style/btn_keyboard_shrinked"
+            android:text="1" />
+        <Button
+            android:id="@+id/btn2"
+            style="@style/btn_keyboard_shrinked"
+            android:text="2"
+            />
+        <Button
+            android:id="@+id/btn3"
+            style="@style/btn_keyboard_shrinked"
+            android:text="3"
+            />
+        <Button
+            android:id="@+id/btn4"
+            style="@style/btn_keyboard_shrinked"
+            android:text="4"
+            />
+        <Button
+            android:id="@+id/btn5"
+            style="@style/btn_keyboard_shrinked"
+            android:text="5"
+            />
+
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/btnDelete"
+            style="@style/btn_keyboard_shrinked"
+            android:text="Del"
+            android:textSize="18sp"
+            />
+        <Button
+            android:id="@+id/btn6"
+            style="@style/btn_keyboard_shrinked"
+            android:text="6"
+            />
+
+        <Button
+            android:id="@+id/btn7"
+            style="@style/btn_keyboard_shrinked"
+            android:text="7"
+            />
+        <Button
+            android:id="@+id/btn8"
+            style="@style/btn_keyboard_shrinked"
+            android:text="8"
+            />
+        <Button
+            android:id="@+id/btn9"
+            style="@style/btn_keyboard_shrinked"
+            android:text="9"
+            />
+
+
+        <Button
+            android:id="@+id/btnOk"
+            style="@style/btn_keyboard_shrinked"
+            android:text="Ok"
+            android:textSize="18sp"
+            />
+    </TableRow>
+</TableLayout>

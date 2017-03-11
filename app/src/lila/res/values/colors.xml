@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#fc2cbe</color>
+    <color name="colorPrimaryDark">#cc0c93</color>
+    <color name="colorAccent">#40ff70</color>
+    <color name="shape_default_stroke">#d4d4d4</color>
+    <color name="shape_default_solid">#d4d4d4</color>
+    <color name="item_background_translucent">#999e9c9c</color>
+    <color name="item_background_opaque">#5fd5def2</color>
+</resources>

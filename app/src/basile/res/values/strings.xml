@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">MultiplicationBasile</string>
+    <string name="ass_act_toolbar_title">Basile apprend la table de %1$d</string>
+    <string name="ass_act_toolbar_subtitle">Il est trop fort basile</string>
+    <string name="question_string">%1$d x %2$d = %3$d</string>
+    <string name="question_string_init">%1$d x %2$d = ? </string>
+
+
+
+    <string name="score_owner">Basile</string>
+</resources>

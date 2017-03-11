@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:background="@drawable/background_shape"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical">
+
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/imvBadgeAnswer"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        app:srcCompat="@mipmap/ic_badge_hero"/>
+    <TextView
+        android:id="@+id/txvTable"
+        style="@style/textview_basics"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:shadowColor="@color/item_background_opaque"
+        android:shadowDy="2"
+        android:shadowRadius="2"
+        android:text="A" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_vertical|right"
+        android:layout_margin="5dp">
+
+        <TextView
+            android:id="@+id/txvScore"
+            style="@style/textview_basics"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/mainact_txvScore" />
+        <TextView
+            android:id="@+id/txvTime"
+            style="@style/textview_basics"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/mainact_txvQuestionNumber" />
+        <TextView
+            android:id="@+id/txvRange"
+            style="@style/textview_basics"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textColor="@color/colorPrimary"
+            android:text="@string/mainact_txvScore" />
+    </LinearLayout>
+</LinearLayout>

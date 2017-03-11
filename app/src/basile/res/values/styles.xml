@@ -1,0 +1,38 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+    <style name="textview_basics" parent="TextAppearance.AppCompat.Medium">
+        <item name="android:layout_marginBottom">5dp</item>
+    </style>
+    <style name="textview_title" parent="TextAppearance.AppCompat.Large">
+        <item name="android:layout_marginBottom">5dp</item>
+    </style>
+    <style name="edittext_basic" parent="Base.Widget.AppCompat.EditText">
+        <item name="android:layout_marginBottom">5dp</item>
+        <item name="android:textSize">22sp</item>
+    </style>
+    <style name="btn_keyboard" >
+        <item name="android:layout_width">48dp</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:background">@drawable/background_shape</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_margin">@dimen/activity_horizontal_margin</item>
+        <item name="android:onClick">keyboardCallback</item>
+    </style>
+    <style name="btn_keyboard_shrinked" >
+        <item name="android:layout_width">48dp</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:background">@drawable/background_shape_shrink</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_margin">@dimen/shape_default_padding</item>
+        <item name="android:onClick">keyboardCallback</item>
+    </style>
+</resources>

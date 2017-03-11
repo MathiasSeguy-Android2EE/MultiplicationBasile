@@ -1,0 +1,69 @@
+<resources>
+    <string name="app_name">Default Title</string>
+    <string name="app_name_feature">Default</string>
+    <string name="ass_act_toolbar_title">Basile apprend la table de %1$d</string>
+    <string name="ass_act_toolbar_subtitle">Il est trop fort basile</string>
+
+    <string name="rec_act_toolbar_title">Ma table des records</string>
+    <string name="rec_act_toolbar_subtitle">Je suis trop fort</string>
+    <string name="score_owner">Mathias</string>
+
+
+    <string name="question_string">%1$d x %2$d = %3$d</string>
+    <string name="question_string_init">%1$d x %2$d = ? </string>
+
+    <string name="mainact_max_multiplication_value">Quelle est la table que tu souhaites apprendre ?</string>
+    <string name="mainact_maxvalue_edt_hint">Tape un nombre</string>
+    <string name="mainact_txvTemps">Temps : %1$ds</string>
+    <string name="mainact_txvScore">%1$d pts</string>
+    <string name="mainact_txvQuestionNumber">%1$d/%2$d</string>
+    <string name="mainact_answer_edt_hint"> \? </string>
+    <string name="mainact_start">Start</string>
+    <string name="mainact_switch_positive">Oui</string>
+    <string name="mainact_switch_negative">Non</string>
+    <string name="mainact_switch_question">Uniquement cette table</string>
+    <string-array name="mutliplication_values_choices">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+        <item>13</item>
+        <item>14</item>
+        <item>15</item>
+        <item>16</item>
+        <item>17</item>
+        <item>18</item>
+        <item>19</item>
+        <item>20</item>
+    </string-array>
+
+    <string name="congrats_dial_score">Ton score est %1$d / %2$d</string>
+    <string name="congrats_dial_elapsedtime">en %1$d secondes</string>
+
+    <string name="congrats_dial_mess_failed">Tu ne connais pas cette table de mutliplication.\nContinues à t\'entraîner mon chéri</string>
+    <string name="congrats_dial_mess_good">Tu as réussi à avoir la moyenne!\r\nProchaine étape devient un héro en améliorant ton score.</string>
+    <string name="congrats_dial_mess_hero">Tu est un héro,\r\nje te félicite, je suis fier de toi.</string>
+    <string name="congrats_dial_mess_superhero">Tu es un super héro de la table de multiplication de %1$d.\r\nJe suis très fier de toi.</string>
+
+    <string name="congrats_dialog_title_superhero">Tu es un Super Héro </string>
+    <string name="congrats_dialog_title_hero">Tu es un héro </string>
+    <string name="congrats_dialog_title_good">Pas mal, tu t\'en es sorti</string>
+    <string name="congrats_dialog_title_failed">Arf, tu ferras mieux la prochaine fois </string>
+
+    <string name="congrats_dialog_ok">Jouer</string>
+
+
+    <string name="item_record_table"> Table de %1$d</string>
+    <string name="item_record_score">Score: %1$d</string>
+    <string name="item_record_temps">Temps: %1$d</string>
+    <string name="item_range_thistableonly">[only]</string>
+    <string name="item_range_tablerange">[range]</string>
+</resources>
