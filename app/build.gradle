@@ -1,98 +1,197 @@
 apply plugin: 'com.android.application'
+/**
+ * Our variables definition for the build script
+ */
+apply from: 'gradle/var_definition.gradle'
+/**
+ * For JAvaCOdeCOverage
+ */
+apply plugin: 'jacoco'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    compileSdkVersion project.compileSdk
+    buildToolsVersion project.buildToolsVersion
     defaultConfig {
         applicationId "com.android2ee.basile.multiplication"
-        minSdkVersion 14
-        targetSdkVersion 25
-        versionCode 1
-        versionName "1.0"
+        minSdkVersion project.minSdk
+        targetSdkVersion project.targetSdk
+        versionCode project.versionCode
+        versionName project.versionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary = project.useSupportLibVectorDrawable
     }
+    /***********************************************************
+     *  Defining and Loading Properties
+     **********************************************************/
+    apply from: 'gradle/load_accounts.gradle'
+
+    /***********************************************************
+     *  Signing
+     **********************************************************/
 
     signingConfigs {
+        debug {
+            storeFile project.ext.JKSFile
+            storePassword project.ext.JKSPassword
+            keyAlias project.ext.JKSKeyAlias
+            keyPassword project.ext.JKSKeyPassword
+        }
         release {
-            storeFile file("javaKeyStore.jks")
-            storePassword "passwordOfTheJks"
-            keyAlias "keyName"
-            keyPassword "passwordOfTheKey"
+            storeFile project.ext.JKSFile
+            storePassword project.ext.JKSPassword
+            keyAlias project.ext.JKSKeyAlias
+            keyPassword project.ext.JKSKeyPassword
         }
     }
+
+
+    /***********************************************************
+     *  Default values for all variants
+     **********************************************************/
+    //define default value for your attibutes
+    defaultConfig {
+        //How to define a BuildConfig attribute
+        buildConfigField("boolean", "isallowed", "true")
+        buildConfigField("String", "isStringallowed", '\"quarante trois\"')
+        buildConfigField("int", "intAllowed", "3")
+        //How to add element in your R class
+        resValue "string", "hidden_string", "I love you my sweety"
+        resValue "color", "color_var", "#FF00ff"
+        resValue "bool", "isBoolAllowed", "true"
+    }
+
+
+    /***********************************************************
+     *  Build Type
+     **********************************************************/
 
     buildTypes {
         release {
-            minifyEnabled true
-            shrinkResources true
             signingConfig signingConfigs.release
+            minifyEnabled false
+            shrinkResources false
+            useProguard false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug {
+            signingConfig signingConfigs.debug
             applicationIdSuffix '.debug'
             versionNameSuffix '.debug'
+            buildConfigField("boolean", "isallowed", "true")
+            resValue "string", "hidden_string", "I love debug"
         }
     }
-
-
-    //define default value for your attibutes
-    defaultConfig {
-        resValue "string", "hidden_string", "I love you my sweety"
+    /**
+     * You should not do that
+     */
+    lintOptions {
+        abortOnError false
     }
+
+    /***********************************************************
+     *  Managing flavors
+     **********************************************************/
+
     //Give a name to your dimension
     flavorDimensions "enfants", "operator"
+
+
     //define your flavors (as one flavor has a dimension they must all have one)
-    productFlavors{
-        basile{
+    productFlavors {
+        basile {
             dimension "enfants"
 //            resValue "boolean","basile_dimension","true" -> not allowed
 //            resValue "int", "int_allowed", "1" -> not allowed
+            buildConfigField("boolean", "isallowed", "true")
             resValue "string", "hidden_string", "I love you my basilou"
-            resValue "color", "int_allowed", "#FF00ff"
-            buildConfigField("boolean","isallowed","true")
+            resValue "color", "color_var", "#FF00ff"
         }
-        lila{
+        lila {
             dimension "enfants"
             applicationId "com.android2ee.lila.multiplication"
+            buildConfigField("boolean", "isallowed", "true")
             resValue "string", "hidden_string", "I love you my Lila"
-            resValue "color", "int_allowed", "#FF00ff"
-            buildConfigField("boolean","isallowed","true")
+            resValue "color", "color_var", "#FF00ff"
         }
-        multiplication{
+        multiplication {
             dimension "operator"
         }
-        addition{
+        addition {
             dimension "operator"
         }
     }
-    //Remove the BasileAddition and LilaMultiplication flavor
-    android.variantFilter { variant ->
-        if(variant.getFlavors().get(0).name.equals('basile')
-                && variant.getFlavors().get(1).name.equals('addition')) {
-            variant.setIgnore(true);
+
+    /***********************************************************
+     *  Apply the build hooks here
+     **********************************************************/
+    apply from: 'gradle/builds_hooks.gradle'
+
+    /***********************************************************
+     *  Manage your dependencies
+     **********************************************************/
+
+    dependencies {
+        implementation fileTree(include: ['*.jar'], dir: 'libs')
+        // Espresso
+        androidTestImplementation("com.android.support.test.espresso:espresso-core:${espressoVersion}", {
+            exclude group: "com.android.support', module: 'support-annotations junit"
+        })
+        androidTestImplementation("com.android.support.test.espresso:espresso-contrib:${espressoVersion}") {
+            // Necessary to avoid version conflicts
+            exclude group: 'com.android.support', module: 'appcompat-v7'
+            exclude group: 'com.android.support', module: 'support-v4'
+            exclude group: 'com.android.support', module: 'recyclerview-v7'
+            exclude group: 'com.android.support', module: 'design'
         }
-        if(variant.getFlavors().get(0).name.equals('lila')
-                && variant.getFlavors().get(1).name.equals('multiplication')) {
-            variant.setIgnore(true);
+        androidTestImplementation "com.android.support.test.espresso:espresso-intents:${espressoVersion}"
+        // Runner
+        androidTestImplementation("com.android.support.test:runner:${androidTestVersion}") {
+            // Necessary if your app targets Marshmallow (since the test runner
+            // hasn't moved to Marshmallow yet)
+            exclude group: "com.android.support", module: "support-annotations"
         }
+        testImplementation("com.android.support.test:runner:${androidTestVersion}") {
+            // Necessary if your app targets Marshmallow (since the test runner
+            // hasn't moved to Marshmallow yet)
+            exclude group: "com.android.support", module: "support-annotations"
+        }
+        testImplementation "org.json:json:${jsonVersion}" //necessary to read JSONObject in tests
+        // LeakCanary
+        debugImplementation "com.squareup.leakcanary:leakcanary-android:${leakcanaryVersion}"
+        releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:${leakcanaryVersion}"
+        testImplementation "com.squareup.leakcanary:leakcanary-android-no-op:${leakcanaryVersion}"
+        // EventBus
+        implementation "org.greenrobot:eventbus:${eventbusVersion}"
+        implementation "com.android.support:appcompat-v7:${supportLibVersion}"
+        androidTestImplementation "junit:junit:${junitVersion}"
+        testImplementation "junit:junit:${junitVersion}"
+        // Mockito
+        testImplementation "org.mockito:mockito-core:${mokitoVersion}"
+        // Design => for example snackbar
+        implementation "com.android.support:design:${supportLibVersion}"
+        implementation "com.android.support:cardview-v7:${supportLibVersion}"
+        //Crashlytics
+        implementation("com.crashlytics.sdk.android:crashlytics:${crashlyticsVersion}") {
+            transitive = true;
+        }
+
+        //For DB to be replaced by room
+        implementation "com.github.satyan:sugar:${sugarVersion}"
+
+        //Stetho just to check
+        //http://facebook.github.io/stetho/
+        //https://code.tutsplus.com/tutorials/debugging-android-apps-with-facebooks-stetho--cms-24205
+        implementation "com.facebook.stetho:stetho:${fbStetho}"
+        implementation "com.facebook.stetho:stetho-okhttp3:${fbStetho}"
+
+        //Android architecture component support (ViewModel)
+        implementation "android.arch.lifecycle:extensions:${archiComponentVersion}"
+        annotationProcessor "android.arch.lifecycle:compiler:${archiComponentVersion}"
     }
+    /***********************************************************
+     *  Apply your check here
+     **********************************************************/
+    apply from: 'gradle/tools_reporter.gradle'
+
 }
 
-task printVariantsName(){
-    doLast{
-        android.applicationVariants.all{ variant ->
-            println variant.name
-        }
-    }
-}
-dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-    compile ('com.android.support:appcompat-v7:25.1.0')
-    compile 'com.android.support:recyclerview-v7:25.1.0'
-
-    compile 'com.github.satyan:sugar:1.4'
-    testCompile 'junit:junit:4.12'
-}

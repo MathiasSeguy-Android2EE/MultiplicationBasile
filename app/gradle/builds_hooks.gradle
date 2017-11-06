@@ -1,0 +1,55 @@
+/***********************************************************
+ *  Apply the build hooks here
+ **********************************************************/
+/**
+ * Rename all the apk to obtain the following format:
+ * app-mycms_0.0.1_201704100_0101.apk
+ */
+android.variantFilter { variant ->
+    variant.outputs.each { output ->
+        output.outputFile = new File(
+                output.outputFile.parent,
+                output.outputFile.name.replace(".apk", def_current_apk_name + ".apk"))
+
+    }
+}
+
+/**
+ * Adadpt the variants existence depending on the build you are doing 'aar or apk)
+ * You don't need the same variants
+ */
+//Remove the BasileAddition and LilaMultiplication flavor
+android.variantFilter { variant ->
+    if (variant.getFlavors().get(0).name.equals('basile')
+            && variant.getFlavors().get(1).name.equals('addition')) {
+        variant.setIgnore(true);
+    } else {
+        println "Var of the project"
+        println variant.getFlavors().get(0).name
+        println file(STORE_FILE)
+        println uploadRepo
+        println "------------------"
+    }
+    if (variant.getFlavors().get(0).name.equals('lila')
+            && variant.getFlavors().get(1).name.equals('multiplication')) {
+        variant.setIgnore(true);
+    }
+}
+
+// Continue gradle tasks even if test fails
+tasks.withType(VerificationTask) { task ->
+    task.ignoreFailures = true
+}
+
+//Enable the coverage report for unit test
+android.testOptions {
+    unitTests.all {
+        jacoco {
+            includeNoLocationClasses = true
+        }
+    }
+}
+
+android.testOptions {
+    unitTests.returnDefaultValues = true
+}

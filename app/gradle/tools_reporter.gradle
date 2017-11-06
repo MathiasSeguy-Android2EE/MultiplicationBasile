@@ -1,0 +1,93 @@
+//This task aims to run a bunch of test and checks in MyCMS
+//Taken from the project
+//The main task is checkMyCmsProject
+//see
+//https://medium.com/contentsquare-engineering-blog/make-or-break-with-gradle-dac2e858868d
+//and https://github.com/smarkovik/make-or-break
+//code quality tools
+apply from: "gradle/toolsReporter/findbugs.gradle"
+//apply from: "gradle/check/codequality-pmd.gradle"
+//apply from: "gradle/check/codequality-infer.gradle"
+//apply from: "gradle/check/codequality-checkstyle.gradle"
+
+/***********************************************************
+ *  Your Tasks for building and checking
+ **********************************************************/
+
+/**
+ * Build then Run AndroidTests and UnitTests.
+ */
+task fullBuild(dependsOn: [':app:build',':app:connectedAndroidTest',':app:test']) {
+    group = project.ext.myGradleGroup
+    description ="Build then Run AndroidTests and UnitTests."
+    doLast {
+        println 'Done'
+    }
+}
+
+/**
+ * Generate the Analysers tools reports on your projects
+ */
+task runReportersTools(dependsOn: [
+        'findbugs',//ok
+//        'jacocoTestReport',//ok, almost
+//        'check',//trying to use infer but doesn't work on Windows
+//        'checkAllSource',//should be banned
+//        'pmd',
+//        'androidJavadocs'
+]) {
+    group = project.ext.myGradleGroup
+    description ="Generate the Tools anaylzers reports."
+    doFirst {
+        println 'LaunchingCheck'
+    }
+    doLast {
+        println 'check done'
+
+    }
+}
+/**
+ * Run the build, the tests and the analyzers tools reports
+ */
+task buildAndCheckProject(dependsOn: [
+        'fullBuild',//ok
+        'runReportersTools'
+]) {
+    group = project.ext.myGradleGroup
+    description ="Run full build and then the full check."
+    doFirst {
+        println 'Starting the build'
+    }
+    doLast {
+        moveTheReportToReleaseFolder
+        println 'Full complete check of MyCms application is done'
+    }
+}
+
+/***********************************************************
+ *  Move your report to your release folders
+ **********************************************************/
+
+//Move the generated files to the delivery
+task moveTheReportToReleaseFolder(type: Copy,
+        dependsOn: ['fullBuild', 'cleanReleaseReportDirectory']) {
+    group = project.ext.myGradleGroup
+    description ="Move the build/report folder into the weekly_release."
+    println 'Task moveTheReportsToReleaseFolder'
+    from 'build/reports/'
+    into 'weekly_release/' + def_branche_name + '/reports/'
+    include('**/*')
+    exclude('**/*-release-*')
+    doLast {
+        println 'moveTheFileToReleaseFolder over'
+    }
+}
+//Remove directory where release test reports will be copied into
+task cleanReleaseReportDirectory(type: Delete) {
+    group = project.ext.myGradleGroup
+    description ="Clean the directory of the report in the weekly_release."
+    doLast {
+        delete 'weekly_release/' + def_branche_name + '/reports/'
+    }
+}
+runReportersTools.mustRunAfter 'fullBuild'

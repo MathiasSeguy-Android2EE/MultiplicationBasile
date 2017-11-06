@@ -67,6 +67,12 @@ public class MyApplication extends Application {
         assService=AssesmentService.getInstance();
         SugarContext.init(this);
         Log.e("MyAppInitializer","Second choices, a log is enough to prove the concept: MyApplication");
+        Log.e("MyAppInitializer","Gradle Variable resValues.hidden_string ="+R.string.hidden_string);
+        Log.e("MyAppInitializer","Gradle Variable resValues.isBoolAllowed="+R.bool.isBoolAllowed);
+        Log.e("MyAppInitializer","Gradle Variable resValues.color_var="+R.color.color_var);
+        Log.e("MyAppInitializer","Gradle Variable BuildConfig.isallowed="+BuildConfig.isallowed);
+        Log.e("MyAppInitializer","Gradle Variable BuildConfig.isStringallowed="+BuildConfig.isStringallowed);
+        Log.e("MyAppInitializer","Gradle Variable BuildConfig.intAllowed="+BuildConfig.intAllowed);
     }
 
     /***********************************************************

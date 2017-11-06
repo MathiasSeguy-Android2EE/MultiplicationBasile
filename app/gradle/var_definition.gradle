@@ -1,0 +1,133 @@
+/***********************************************************
+ *  Gradle definition file of our dynamic variables
+ **********************************************************/
+println 'in the var_defintion'
+
+/***********************************************************
+ *  Then define you attibutes/variables
+ *  You need to define that way for others file to know them
+ *  Others gradle file can not call the method (or I didn't find yet)
+ **********************************************************/
+project.ext{
+
+    versionName = "1.0.0"
+    compileSdk = 26
+    minSdk = 14
+    targetSdk = 26
+    //Can not decrease
+    versionCode = 1
+    //Gradle groupd name (for your own tasks)
+    myGradleGroup="Multiplication Basile tasks"
+
+    //Please use the support library and use
+    useSupportLibVectorDrawable = true
+
+    //build var
+    def_time_format=getDateTime()
+    def_branche_name=branch()
+    def_commit_number=commitNumber()
+    def_current_apk_name=apkCurrentSuffix()
+    def_apk_name_wrelease=apkWReleaseSuffix()
+
+    //natif tools
+    buildToolsVersion = "26.0.1"
+    supportLibVersion = "26.1.0"
+    supportAnnotationVersion = "23.1.1"
+
+    //natif
+    androidTestVersion = "1.0.0"
+    junitVersion = "4.12"
+    googlePlayServices = "11.0.1"
+    androidGoogleMapUtil = "0.5"
+    constraintLayout = "1.0.2"
+    supprtMultidex = "1.0.1"
+
+    //natural libs
+    sugarVersion = "1.4"
+    eventbusVersion = "3.0.0"
+    //debug tools
+    leakcanaryVersion = "1.5.1"
+    crashlyticsVersion = "2.6.8@aar"
+
+    //facebook analyse tools
+    fbStetho = "1.5.0"
+    //tests
+    mokitoVersion = "2.8.47"
+    espressoVersion = "3.0.0"
+    jsonVersion = "20160810"
+
+    //android architecture components
+    archiComponentVersion = "1.0.0-beta2"
+}
+/***********************************************************
+ *  Define the methods that calculate your variables
+ **********************************************************/
+/**
+ * For the list of available formats:
+ * http://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html
+ * Use this definition to obtain the date at the format
+ * @return The date as a string
+ */
+def getDateTime() {
+    return new Date().format("MMdd")
+}
+def getWeekNumber() {
+    return new Date().format("w")
+}
+def getYearNumber() {
+    return new Date().format("YYYY")
+}
+/**
+ * Return apk current
+ * @return
+ */
+def apkCurrentSuffix(){
+    def_branche_name+'_'+getDateTime()
+}
+/**
+ * Return apk weekly release
+ * app-mycms-prod-debug_dev-0.5.0.0+2017w16.BuildCommit.apk
+ * '_'+def_branche_name+'_w'+getWeekNumber()
+ * '_'+versionName+'+getYearNumber()_w'+getWeekNumber()+"."+def_commit_number
+ * @return
+ */
+def apkWReleaseSuffix(){
+    '_'+versionName+'.'+versionCode+'+'+getYearNumber()+'_w'+getWeekNumber()+"."+def_commit_number
+}
+/**
+*Find the branch name of the build
+*this is a function
+ * */
+def branch() {
+    def branch = ""
+    def branchName = ""
+    def command = hasProperty('gitPath') ? gitPath : 'git';
+    //Find the branch name
+    def proc = "${command} rev-parse --abbrev-ref HEAD".execute()
+    proc.in.eachLine { line -> branch = line }
+    proc.err.eachLine { line -> println line }
+    proc.waitFor()
+    branchName='transient'
+    if(branch.startsWith('dev')) {
+        branchName='dev'
+    } else if (branch.startsWith('release') ||
+            branch.startsWith('bugfix') ||
+            branch.startsWith('hotfix')) {
+        branchName='staging'
+    } else if(branch.startsWith('master')) {
+        branchName='master'
+    }
+    println 'Branch name is equals to '+branch
+    branchName
+}
+
+def commitNumber(){
+    def commitNum = ""
+    def command = hasProperty('gitPath') ? gitPath : 'git';
+    def proc = "${command} rev-list --count  ${def_branche_name}".execute()
+    proc.in.eachLine { line -> commitNum = line }
+    proc.err.eachLine { line -> println line }
+    proc.waitFor()
+    println 'The commit number is '+commitNum
+    commitNum
+}

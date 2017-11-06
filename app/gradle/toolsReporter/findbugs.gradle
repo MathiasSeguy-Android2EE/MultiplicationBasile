@@ -1,0 +1,49 @@
+apply plugin: 'findbugs'
+/**
+ * Define your directory
+ */
+def reportsDir = "${project.buildDir}/reports"
+
+// Add checkstyle, findbugs, pmd and lint to the check task.
+//check.dependsOn 'findbugs'
+
+task findbugs(type: FindBugs, dependsOn: [
+        ':app:assembleBasileMultiplicationDebug',
+        ':app:assembleLilaAdditionDebug',
+        ':app:cleanPreviousFindbugsReports',//ok
+]) {
+    group = project.ext.myGradleGroup
+    description ="Generate the findbugs report."
+    ignoreFailures = true
+    reportLevel = "low"
+    effort = "max"
+    excludeFilter = new File("gradle/toolsReporter/findbugs/findbugs-filter.xml")
+    //Define exactly where are the class in your Build folder to analyze
+    classes = files("${buildDir}/intermediates/classes/basileMultiplication",
+                    "${buildDir}/intermediates/classes/lilaAddition")
+
+    //Where are your sources:
+    source 'src/main/java', 'src/basile/java', 'src/lila/java', 'src/addition/java', 'src/multiplication/java'
+    include '**/*.java'
+    exclude '**/gen/**'
+
+    reports {
+        xml.enabled = false
+        html.enabled = true
+        xml {
+            destination new File("$reportsDir/findbugs/findbugs.xml")
+        }
+        html {
+            destination new File("$reportsDir/findbugs/findbugs.html")
+        }
+    }
+
+    classpath = files()
+}
+
+//Remove directory where release test reports will be copied into
+task cleanPreviousFindbugsReports(type: Delete) {
+    doLast {
+        delete '${project.buildDir}/reports/findbugs'
+    }
+}

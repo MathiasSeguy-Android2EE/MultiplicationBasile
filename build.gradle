@@ -2,29 +2,37 @@
 
 buildscript {
     repositories {
+        mavenCentral()
         jcenter()
+        maven { url 'https://maven.fabric.io/public' }
+        google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.0'
-        classpath 'io.balto:balto-plugin:2.0.2'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
+        classpath 'com.android.tools.build:gradle:3.0.0-beta2'
+        //fabric
+        classpath 'io.fabric.tools:gradle:1.23.0'
+        //apt
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+        //Gradle License Plugin
+        classpath 'com.cookpad.android.licensetools:license-tools-plugin:0.23.0'
+        //Gradle check tasks : Jacoco
+        classpath 'org.jacoco:org.jacoco.core:0.7.7.201606060606'
     }
 }
 
 allprojects {
     repositories {
         jcenter()
+        mavenCentral()
+        //fabric
+        maven { url 'https://maven.fabric.io/public' }
+        //architecture lib
+        google()
     }
 }
 
 task clean(type: Delete) {
     delete rootProject.buildDir
-}
-
-
-task fullBuild(dependsOn: [':app:build','app:connectedAndroidTest']) {
-    doLast {
-        println 'Done'
-    }
 }
