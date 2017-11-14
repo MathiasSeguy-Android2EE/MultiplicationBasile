@@ -3,7 +3,7 @@
  **********************************************************/
 /**
  * Rename all the apk to obtain the following format:
- * app-mycms_0.0.1_201704100_0101.apk
+ * _0.0.1_201704100_0101.apk
  */
 android.variantFilter { variant ->
     variant.outputs.each { output ->

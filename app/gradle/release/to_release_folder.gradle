@@ -1,0 +1,122 @@
+/***********************************************************
+ *  Task to move report/apk/aar to the release folder
+ **********************************************************/
+def releaseRootFolder='release/' + def_branche_name+'_v'+project.ext.versionCode
+/**printing content of the release directory
+//http://stackoverflow.com/questions/18569983/androidgradle-list-directories-into-a-file
+//The task name is normally packageRelease
+//But for this file, the following name is better*/
+task packageRelease(dependsOn: ['moveTheReportToReleaseFolder',
+                                  'moveTheReportIndexToReleaseFolder',
+                                  'moveTheApkToReleaseFolder']) {
+    group = project.ext.myGradleGroup
+    description ="List the file that belongs to the release folder. Depends on the fullBuild and move tasks."
+    doFirst {
+        println 'Task packageRelease'
+    }
+    doLast {
+        //then list them
+        println 'starting the work with the branch' + def_apk_name_wrelease
+        println "Listing files contained in:${releaseRootFolder} == "
+        //define the variables for files location
+        def releaseRootF =new File(releaseRootFolder)
+        releaseRootF.mkdirs()
+        releaseRootF.setWritable(true)
+        def listFile = new File(releaseRootF, 'FolderContent.txt')
+        listFile.setWritable(true)
+        //define the content to write
+        def contents = ""
+        //get the files tree
+        def tree = fileTree(dir: releaseRootF, excludes: ['**/*.js',
+                                                        '**/*.css',
+                                                        '**/*.html',
+                                                        '**/*.xml'])
+        //browse all those files
+        tree.visit { fileDetails ->
+            if (!fileDetails.isDirectory()) {
+                contents += "${fileDetails.relativePath}" + "\n"
+            }
+        }
+        //write the content
+        listFile.write contents
+        println 'listReleaseFiles over'
+    }
+}
+
+/**
+ * Move the generated files to the delivery
+ */
+task moveTheApkToReleaseFolder(type: Copy,
+        dependsOn: 'fullBuild') {
+    group = project.ext.myGradleGroup
+    description ="Move generated apk into the release_folder inside the good folder (depend on the branch). It depends on the "
+    //you need to define the xact folder, else it reproduces the folder hierarchy
+    from 'build/outputs/apk/basileMultiplication/debug',
+            'build/outputs/apk/lilaAddition/debug',
+            'build/outputs/apk/basileMultiplication/release',
+            'build/outputs/apk/lilaAddition/release'
+    into releaseRootFolder
+    include('**/*.apk')
+    //I want all the apk, but if you want only debug, you have them below:
+//    exclude('**/*-release-*')
+    rename { String fileName ->
+        fileName.replace(".apk", def_apk_name_wrelease + ".apk")
+    }
+    doFirst {
+        println 'Task moveTheFileToReleaseFolder'
+    }
+    doLast {
+        println 'moveTheFileToReleaseFolder over'
+    }
+}
+
+//Move the generated files to the delivery
+task moveTheReportToReleaseFolder(type: Copy,
+        dependsOn: ['runReportersTools',
+                    'cleanReleaseReportDirectory']) {
+    group = project.ext.myGradleGroup
+    description ="Move the build/report folder into the weekly_release."
+    from 'build/reports/'
+    into releaseRootFolder + '/reports/'
+    include('**/*')
+    exclude('**/*-release-*')
+    doFirst {
+        println 'Task moveTheReportsToReleaseFolder'
+    }
+    doLast {
+        println 'moveTheFileToReleaseFolder over'
+    }
+}
+
+//Move the report index to the delivery
+task moveTheReportIndexToReleaseFolder(type: Copy) {
+    group = project.ext.myGradleGroup
+    description ="Move the build/report index into the weekly_release."
+    from 'gradle/release/report'
+    into releaseRootFolder
+    include('**/*')
+    exclude('**/*-release-*')
+    filter { String line ->
+        if(line.contains('${DateOfTheDay}')){
+            line.replace('${DateOfTheDay}',project.ext.def_readableSchoolDate)
+        }else if(line.contains('${VersionNumber}')){
+            line.replace('${VersionNumber}',project.ext.def_apk_name_wrelease)
+        }else line
+    }
+    doFirst {
+        println 'Task moveTheReportsIndexToReleaseFolder'
+    }
+    doLast {
+        println 'moveTheFileToReleaseFolder over'
+    }
+}
+
+//Remove directory where release test reports will be copied into
+task cleanReleaseReportDirectory(type: Delete) {
+    group = project.ext.myGradleGroup
+    description ="Clean the directory of the report in the weekly_release."
+    delete  releaseRootFolder + '/reports/',
+            releaseRootFolder + '/report_index.html'
+}
+runReportersTools.mustRunAfter 'cleanReleaseReportDirectory'
+moveTheReportIndexToReleaseFolder.mustRunAfter 'cleanReleaseReportDirectory'

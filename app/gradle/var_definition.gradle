@@ -24,13 +24,14 @@ project.ext{
 
     //build var
     def_time_format=getDateTime()
+    def_readableSchoolDate=getReadableSchoolDate()
     def_branche_name=branch()
     def_commit_number=commitNumber()
     def_current_apk_name=apkCurrentSuffix()
     def_apk_name_wrelease=apkWReleaseSuffix()
 
     //natif tools
-    buildToolsVersion = "26.0.1"
+    buildToolsVersion = "26.0.2"
     supportLibVersion = "26.1.0"
     supportAnnotationVersion = "23.1.1"
 
@@ -77,6 +78,9 @@ def getWeekNumber() {
 def getYearNumber() {
     return new Date().format("YYYY")
 }
+def getReadableSchoolDate() {
+    return new Date().format("dd MMM YYYY hh:mm")
+}
 /**
  * Return apk current
  * @return
@@ -86,7 +90,7 @@ def apkCurrentSuffix(){
 }
 /**
  * Return apk weekly release
- * app-mycms-prod-debug_dev-0.5.0.0+2017w16.BuildCommit.apk
+ * app-prod-debug_dev-0.5.0.0+2017w16.BuildCommit.apk
  * '_'+def_branche_name+'_w'+getWeekNumber()
  * '_'+versionName+'+getYearNumber()_w'+getWeekNumber()+"."+def_commit_number
  * @return

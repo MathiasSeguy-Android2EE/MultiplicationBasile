@@ -7,6 +7,19 @@ apply from: 'gradle/var_definition.gradle'
  * For JAvaCOdeCOverage
  */
 apply plugin: 'jacoco'
+/**
+ * Our file to enable code coverage using JAvaCOdeCOverage
+ */
+apply from: 'gradle/toolsReporter/jacoco.gradle'
+/**
+ * Used to deploy on Nexus our apk
+ */
+apply plugin: 'maven'
+/**
+ * This plugin provides a task to generate a HTML license report based on the configuration
+ * You can find the plugin project here :https://github.com/cookpad/license-tools-plugin
+ */
+apply plugin: 'com.cookpad.android.licensetools'
 
 android {
     compileSdkVersion project.compileSdk
@@ -24,11 +37,9 @@ android {
      *  Defining and Loading Properties
      **********************************************************/
     apply from: 'gradle/load_accounts.gradle'
-
     /***********************************************************
      *  Signing
      **********************************************************/
-
     signingConfigs {
         debug {
             storeFile project.ext.JKSFile
@@ -72,6 +83,8 @@ android {
             shrinkResources false
             useProguard false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            //add tests coverage using Jacoco
+            testCoverageEnabled false
         }
         debug {
             signingConfig signingConfigs.debug
@@ -79,6 +92,8 @@ android {
             versionNameSuffix '.debug'
             buildConfigField("boolean", "isallowed", "true")
             resValue "string", "hidden_string", "I love debug"
+            //add tests coverage using Jacoco
+            testCoverageEnabled false
         }
     }
     /**
@@ -192,6 +207,6 @@ android {
      *  Apply your check here
      **********************************************************/
     apply from: 'gradle/tools_reporter.gradle'
-
+    apply from: 'gradle/release.gradle'
 }
 

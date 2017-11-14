@@ -1,0 +1,44 @@
+apply plugin: 'pmd'
+
+/***********************************************************
+ *  PMD file
+ **********************************************************/
+def reportsDir = "${project.buildDir}/reports"
+
+// Add checkstyle, findbugs, pmd and lint to the check task.
+check.dependsOn 'pmd'
+
+/**
+ * Launch PMD on the project
+ */
+task pmd(type: Pmd, dependsOn: [
+        ':app:assembleDebug',
+        ':app:cleanPreviousPmdReports',//ok
+]) {
+    group = project.ext.myGradleGroup
+    description ="Generate the pmd report, but I am not sure we want it."
+    ignoreFailures = true
+    ruleSetFiles = files("gradle/toolsReporter/pmd/pmd-ruleset.xml")
+    ruleSets = []
+
+    source 'src/main/java', 'src/basile/java', 'src/lila/java', 'src/addition/java', 'src/multiplication/java'
+    include '**/*.java'
+    exclude '**/gen/**'
+
+    reports {
+        xml.enabled = false
+        html.enabled = true
+        xml {
+            destination "$reportsDir/pmd/pmd.xml"
+        }
+        html {
+            destination "$reportsDir/pmd/pmd.html"
+        }
+    }
+}
+//Remove directory where release test reports will be copied into
+task cleanPreviousPmdReports(type: Delete) {
+    doLast {
+        delete '${project.buildDir}/reports/pmd'
+    }
+}

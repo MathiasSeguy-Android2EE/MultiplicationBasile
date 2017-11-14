@@ -1,0 +1,102 @@
+/***********************************************************
+ *  Call gradlew generateRelease for this file
+ *  It's your entry point
+ **********************************************************/
+
+
+apply from: 'gradle/release/to_release_folder.gradle'
+println 'in Release task declared. Ready to use.'
+//http://coders-kitchen.com/2013/11/01/gradle-git-how-to-map-your-branch-to-a-deployment-profile/
+
+/***********************************************************
+ *  Define your attribute here
+ **********************************************************/
+//Don't :apply from: 'gradle/var_definition.gradle' already done and erase every think overrided
+/***********************************************************
+ *  Define your task
+ **********************************************************/
+//This is the root task
+task generateRelease(dependsOn: ['clean',
+                                 'cleanReleaseReportDirectory',
+                                 'packageRelease',
+                                 'releaseBuild']) {
+    group = project.ext.myGradleGroup
+    description ="Generate the Release."
+    println 'Task generateRelease processing...'
+    //I do nothing, In am an entry point
+    //I use task dependency to launch the build
+    doLast{
+        println 'doLast of Task generateWeeklyReport processing...'
+        if (project.def_branche_name.contains('dev')
+        ||project.def_branche_name.contains('master')){
+            println 'doLast of Task generateWeeklyReport launch uploadArchives...'
+            uploadArchives
+        }else{
+            println 'doLast of Task generateWeeklyReport not in the good branch. Not in the good branch: '+project.def_branche_name
+        }
+    }
+}
+
+//Make a full build :clean/build/InstrumenetationTests
+task releaseBuild(dependsOn: [
+        'generateLicensePage',
+//        'enableCrashlytics',
+        'buildAndCheckProject'
+]) {
+    group = project.ext.myGradleGroup
+    description ="Generate the apks (for all variants) and run Unit and instrumented tests on the project."
+    doFirst{
+        println 'Starting the build'
+    }
+    doLast {
+        println 'Launch full check (jacoco, pmd, javadocs...)'
+    }
+}
+
+/**
+ * Run the build, the tests and the analyzers tools reports
+ */
+task buildAndCheckProject(dependsOn: [
+        'fullBuild',//ok
+        'runReportersTools'
+]) {
+    group = project.ext.myGradleGroup
+    description ="Run full build and then the full check."
+    doFirst {
+        println 'Starting the build'
+    }
+    doLast {
+        println 'Full complete check of the application is done'
+    }
+}
+/**
+ * Build then Run AndroidTests and UnitTests.
+ */
+task fullBuild(dependsOn: [':app:build',
+                           ':app:connectedAndroidTest',
+                           ':app:test']) {
+    group = project.ext.myGradleGroup
+    description ="Build then Run AndroidTests and UnitTests."
+    doLast {
+        println 'Done'
+    }
+}
+
+//Enable crashltyics
+task enableCrashlytics{
+    group = project.ext.myGradleGroup
+    description ="Change the chrashlytics state to enable."
+    doFirst {
+        println 'Changing the value of enableCrashlytics'
+        //crashlytics (fabric)
+        android.defaultConfig.resValue "string", "enableCrashlytics", "true"
+    }
+}
+
+//enable crashlytics have to be done before fullBuild
+packageRelease.mustRunAfter 'releaseBuild'
+packageRelease.mustRunAfter 'fullBuild'
+fullBuild.mustRunAfter enableCrashlytics
+//fullBuild.mustRunAfter generateLicensePage
+
+

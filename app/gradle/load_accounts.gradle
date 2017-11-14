@@ -3,21 +3,22 @@ println 'Hello from gradle_extras'
 
 /***********************************************************
  *  Loading Variables from an external properties Files
+ *  There is no task, it's just code you run.
+ *  You run it each time you evaluate the task graph of gradle
+ *  (so every time you launch any gradle task)
  **********************************************************/
 
-//Define your own properties
-project.ext {
-    uploadRepo = 'not_set'
-    uploadUser = 'not_set'
-    uploadPass = 'not_set'
-}
+/***********************************************************
+ *  Core method
+ **********************************************************/
 //Define a Properties object (you'll read)
 def Properties props = new Properties()
 //find the file defining those properties
 def propFile = project.file('./gradle/properties/accounts_properties.properties')
-println "The propreties file should be ${propFile}"
 //You can also use rootProject
 //def propFileNotUsed = rootProject.file('./app/gradle_others.properties')
+//do a log (in case), it will be displayed every time you avluate the gradle task graph
+println "The propreties file should be ${propFile}"
 
 if (propFile.canRead()){
     //load the properties in your Properties object
@@ -26,10 +27,10 @@ if (propFile.canRead()){
     //You can define specific variables of the build directly
     if (props!=null
             && props.containsKey('JKSFile')) {
-        //Allo the properties are loaded in your project.ext set of variables, enjoy an reuse them
+        //Now the properties are loaded in your props's set of variables, enjoy an reuse them
         //here defining the debug signing config
         //https://docs.gradle.org/current/dsl/org.gradle.api.plugins.ExtraPropertiesExtension.html
-        //To set an already existing value (but useless)
+        //To create or set a value
         project.ext.set("JKSFile" , file(props['JKSFile']))
         //This syntax works
         project.ext.set("JKSPassword" , props['JKSPassword'])
@@ -50,7 +51,7 @@ if (propFile.canRead()){
 
     //Or you can set your own variables
     if (props!=null && props.containsKey('UPLOAD_REPO')){
-        uploadRepo=props['UPLOAD_REPO']
+        project.ext.uploadRepo=props['UPLOAD_REPO']
         println 'accounts_properties.properties found '+uploadRepo
     }else{
         println 'accounts_properties.properties found but UPLOAD_REPO entry is missing'

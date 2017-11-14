@@ -1,0 +1,91 @@
+apply from: 'gradle/release/upload/nexus_apk_var_def.gradle'
+
+//
+//To upload the Application on Nexus to be broadcast with balto
+//
+uploadArchives {
+    group = project.ext.myGradleGroup
+    description ="Upload the achive in Nexus repository. The selected archive is defined in build.gradle" +
+            "in the android."
+    repositories {
+        mavenDeployer {
+            //Define the Coordinates of the project
+            //------------------------------------
+            pom.artifactId = project.POM_ARTIFACT_ID
+            pom.groupId = project.POM_GROUP_ID
+            //If you are on master, push on release
+            if (project.def_branche_name.contains('master')
+                    ||project.def_branche_name.contains('dev')){
+                println 'ReleaseVersion'
+                pom.version = project.VERSION_NAME
+                repository(url: project.RELEASE_REPOSITORY_URL) {
+                    authentication(userName: project.NEXUS_USERNAME, password: project.NEXUS_PASSWORD)
+                }
+            } else {
+                println 'Snapshot'
+                pom.version = project.VERSION_NAME+'-SNAPSHOT'
+                repository(url: project.SNAPSHOT_REPOSITORY_URL) {
+                    authentication(userName: project.NEXUS_USERNAME, password: project.NEXUS_PASSWORD)
+                }
+            }
+
+            //Describe your POM and its content
+            pom.project {
+                name project.POM_NAME
+                packaging project.POM_PACKAGING
+                description project.POM_DESCRIPTION+'for the apk '+project.def_apk_name_wrelease
+                url project.POM_URL
+
+                scm {
+                    url project.POM_SCM_URL
+                    connection project.POM_SCM_CONNECTION
+                    developerConnection project.POM_SCM_DEV_CONNECTION
+                }
+
+                licenses {
+                    license {
+                        name project.POM_LICENCE_NAME
+                        url project.POM_LICENCE_URL
+                        distribution project.POM_LICENCE_DIST
+                    }
+                }
+
+                developers {
+                    developer {
+                        id project.POM_DEVELOPER_ID
+                        name project.POM_DEVELOPER_NAME
+                    }
+                }
+            }
+        }
+
+    }
+
+    //Add the Javadocs, the source jar tasks and some more if you want
+    task androidJavadocsJar(type: Jar, dependsOn: generateProjectJavadocs) {
+        classifier = 'javadoc'
+        from generateProjectJavadocs.destinationDir
+    }
+
+    task androidSourcesJar(type: Jar) {
+        classifier = 'sources'
+        from android.sourceSets.main.java.sourceFiles
+    }
+    //Add those tasks as artifacts to have them took into account
+    artifacts {
+        archives androidSourcesJar
+        archives androidJavadocsJar
+    }
+
+    //You could have had signing and javadocs also.
+//    signing {
+//        required { isReleaseBuild() && gradle.taskGraph.hasTask("uploadArchives") }
+//        sign configurations.archives
+//    }
+
+//    task androidJavadocs(type: Javadoc) {
+//        failOnError false // add this line
+////        source = 'src/main/java'
+//        source = android.sourceSets.main.java.getSrcDirs()
+//    }
+}
