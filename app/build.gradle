@@ -190,8 +190,6 @@ android {
             transitive = true;
         }
 
-        //For DB to be replaced by room
-        implementation "com.github.satyan:sugar:${sugarVersion}"
 
         //Stetho just to check
         //http://facebook.github.io/stetho/
@@ -202,6 +200,9 @@ android {
         //Android architecture component support (ViewModel)
         implementation "android.arch.lifecycle:extensions:${archiComponentVersion}"
         annotationProcessor "android.arch.lifecycle:compiler:${archiComponentVersion}"
+        //Room
+        implementation "android.arch.persistence.room:runtime:${archiComponentVersion}"
+        annotationProcessor "android.arch.persistence.room:compiler:${archiComponentVersion}"
     }
     /***********************************************************
      *  Apply your check here

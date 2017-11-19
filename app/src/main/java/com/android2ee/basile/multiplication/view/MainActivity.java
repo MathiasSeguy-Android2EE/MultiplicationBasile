@@ -2,7 +2,6 @@ package com.android2ee.basile.multiplication.view;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.HapticFeedbackConstants;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,10 +13,11 @@ import android.widget.Switch;
 import com.android2ee.basile.multiplication.MyApplication;
 import com.android2ee.basile.multiplication.R;
 import com.android2ee.basile.multiplication.cross.KeyBoardCallBack;
+import com.android2ee.basile.multiplication.view.mother.MotherActivity;
 import com.android2ee.basile.multiplication.view.records.RecordsActivity;
 
 
-public class MainActivity extends AppCompatActivity implements KeyBoardCallBack {
+public class MainActivity extends MotherActivity implements KeyBoardCallBack {
     private static final String TAG = "MainActivity";
     /***********************************************************
      * Attributes

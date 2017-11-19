@@ -34,15 +34,23 @@ package com.android2ee.basile.multiplication;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 
 import com.android2ee.basile.multiplication.service.AssesmentService;
-import com.orm.SugarContext;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created by Mathias Seguy - Android2EE on 01/03/2017.
  */
 public class MyApplication extends Application {
+    private static final String TAG = "MyApplication";
     private static final String GENERAL = "GENERAL";
     private static final String MAX_MULTIPLICATION_VALUE = "MaxMultiplicationValue";
     /***********************************************************
@@ -65,7 +73,6 @@ public class MyApplication extends Application {
         super.onCreate();
         instance=this;
         assService=AssesmentService.getInstance();
-        SugarContext.init(this);
         Log.e("MyAppInitializer","Second choices, a log is enough to prove the concept: MyApplication");
         Log.e("MyAppInitializer","Gradle Variable resValues.hidden_string ="+R.string.hidden_string);
         Log.e("MyAppInitializer","Gradle Variable resValues.isBoolAllowed="+R.bool.isBoolAllowed);
@@ -128,5 +135,155 @@ public class MyApplication extends Application {
         this.maxQuestionNumber = maxQuestionNumber;
     }
 
+    /***********************************************************
+     *  Threading strategy
+     **********************************************************/
+    //This code belongs to your application class ///
+
+    /******************************************************************************************/
+    /** Managing destruction : the 1 second pattern**************************************************************************/
+    /******************************************************************************************/
+    //Listening for activities life cycle to trigger the serviceManager death
+    //If you min SDK is 17 you can use the ActivityListener directly
+    /**
+     * The AtomicInteger to know if there is an active activity
+     */
+    private AtomicInteger isActivityAlive = new AtomicInteger(0);
+
+    /**
+     * To be called by activities when they go in their onStart method
+     */
+    public void onStartActivity() {
+        Log.d(TAG, "onStartActivity() called with: " + "");
+        if(mServiceKillerHandler==null||mServiceKiller==null){
+            initializeServiceKiller();
+        }
+        isActivityAlive.set(isActivityAlive.get() + 1);
+        //clear the handler, no need to wake up the runnable
+        mServiceKillerHandler.removeCallbacks(mServiceKiller);
+    }
+
+    /**
+     * To be called by activities when they go in their onStop method
+     */
+    public void onStopActivity() {
+        Log.d(TAG, "onStopActivity() called with: " + "");
+        isActivityAlive.set(isActivityAlive.get() - 1);
+        // launch the Runnable in 2 seconds
+        mServiceKillerHandler.postDelayed(mServiceKiller, 1000);
+    }
+    //The 1 second pattern to kill activityManager in 1 second
+    /**
+     * The Runnable that will look if there are no activity alive and launch the serviceManager death
+     */
+    Runnable mServiceKiller = null;
+    /**
+     * The handler that manages the runnable
+     */
+    Handler mServiceKillerHandler = null;
+
+    /**
+     * initialize the runnable and its Handler
+     */
+    private void initializeServiceKiller() {
+        mServiceKiller = new Runnable() {
+            @Override
+            public void run() {
+                //one second later still no activity alive, so kill ServiceManager
+                mServiceKillerHandler.dispatchMessage(mServiceKillerHandler.obtainMessage());
+            }
+        };
+        mServiceKillerHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                Log.d("MyApplication", "in the Handler isActivityAlive==" + isActivityAlive.get());
+                if (isActivityAlive.get() == 0) {
+                    //What you should do when application should die
+                    applicationShouldDie();
+                }
+            }
+        };
+    }
+
+    /**
+     * Kill them all !
+     */
+    private void applicationShouldDie() {
+        Log.e("MyApplication", "applicationShouldDie is called");
+        //first unregister broadcast
+        //kill others elements that have to die (Bitmap...)
+        //kill your runnable
+        mServiceKillerHandler.removeCallbacks(mServiceKiller);
+        mServiceKiller = null;
+        mServiceKillerHandler = null;
+        killKeepAliveThreadExecutor();
+        //kill you serviceManager and call unbind and die
+        //die
+    }
+
+    //Now the Killing method
+    /*
+     * (non-Javadoc)
+     *
+     * @see android.app.Application#onLowMemory()
+     */
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+    }
+/******************************************************************************************/
+/** Pool Executor for Threads that has to finish they threatment when the application shutdown**/
+/******************************************************************************************/
+    /**
+     * The pool executor to use for all cancellable thread and Threads that has to cancelled when the application shutdown
+     */
+    private ExecutorService keepAliveThreadsExceutor = null;
+
+    /**
+     * @return the cancelableThreadsExceutor
+     */
+    public final ExecutorService getKeepAliveThreadsExecutor() {
+        if (keepAliveThreadsExceutor == null) {
+            keepAliveThreadsExceutor = Executors.newFixedThreadPool(12, new BackgroundThreadFactory());
+        }
+        return keepAliveThreadsExceutor;
+    }
+
+    /**
+     * And its associated factory
+     */
+    private class BackgroundThreadFactory implements ThreadFactory {
+        public Thread newThread(Runnable r) {
+            Thread t = new Thread(r);
+            t.setName("KeepAlive" + ((int) (Math.random() * 1000)));
+            return t;
+        }
+    }
+
+    /**
+     * Kill all running Thread and destroy then all
+     * Kill the cancelableThreadsExceutor
+     */
+    private void killKeepAliveThreadExecutor() {
+        if (keepAliveThreadsExceutor != null) {
+            keepAliveThreadsExceutor.shutdown(); // Disable new tasks from being submitted
+            try {// as long as your threads hasn't finished
+                while (!keepAliveThreadsExceutor.isTerminated()) {
+                    // Wait a while for existing tasks to terminate
+                    if (!keepAliveThreadsExceutor.awaitTermination(5, TimeUnit.SECONDS)) {
+                        // Cancel currently executing tasks
+                        keepAliveThreadsExceutor.shutdown();
+                        Log.e("MyApp", "Probably a memory leak here");
+                    }
+                }
+            } catch (InterruptedException ie) {
+                // (Re-)Cancel if current thread also interrupted
+                keepAliveThreadsExceutor.shutdownNow();
+                keepAliveThreadsExceutor = null;
+                Log.e("MyApp", "Probably a memory leak here too");
+            }
+        }
+        keepAliveThreadsExceutor = null;
+    }
 
 }

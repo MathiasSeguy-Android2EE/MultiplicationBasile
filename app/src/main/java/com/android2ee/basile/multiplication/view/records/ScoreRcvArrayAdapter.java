@@ -44,7 +44,9 @@ import com.android2ee.basile.multiplication.R;
 import com.android2ee.basile.multiplication.cross.AchievementLevel;
 import com.android2ee.basile.multiplication.cross.model.Score;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by Mathias Seguy - Android2EE on 19/01/2017.
@@ -75,10 +77,14 @@ public class ScoreRcvArrayAdapter extends RecyclerView.Adapter<ScoreRcvArrayAdap
      * The dataset
      */
     ArrayList<Score> dataset;
+    Date dateTemp;
+
+    SimpleDateFormat sdf=new SimpleDateFormat("dd MMM yy 'at' HH:mm:ss Z");
 
     public ScoreRcvArrayAdapter(Context context, ArrayList<Score> data) {
         inflater = LayoutInflater.from(context);
         dataset = data;
+        dateTemp=new Date();
     }
 
     /***********************************************************
@@ -98,6 +104,9 @@ public class ScoreRcvArrayAdapter extends RecyclerView.Adapter<ScoreRcvArrayAdap
                 getString(R.string.item_record_table,score.getMultiplicationTable()));
         holder.getTxvScore().setText(MyApplication.ins().
                 getString(R.string.item_record_score,score.getScore()));
+        holder.getTxvRecordOwner().setText(score.getName());
+        dateTemp.setTime(score.getWhenInMillis());
+        holder.getTxvDate().setText(sdf.format(dateTemp));
         holder.getTxvRange().setText(score.isThisTableOnly()?
                 MyApplication.ins().getString(R.string.item_range_thistableonly)
                 :MyApplication.ins().getString(R.string.item_range_tablerange));
@@ -137,7 +146,7 @@ public class ScoreRcvArrayAdapter extends RecyclerView.Adapter<ScoreRcvArrayAdap
         /***********************************************************
          * Attributes
          **********************************************************/
-        TextView txvTable,txvScore,txvTime,txvRange;
+        TextView txvTable,txvScore,txvTime,txvRange,txvRecordOwner,txvDate;
         ImageView imvBadgeAnswer;
         View view;
         /***********************************************************
@@ -149,10 +158,19 @@ public class ScoreRcvArrayAdapter extends RecyclerView.Adapter<ScoreRcvArrayAdap
             //instantiate graphical elements
             txvTable=(TextView)view.findViewById(R.id.txvTable);
             txvScore=(TextView)view.findViewById(R.id.txvScore);
-//            txvRecordOwner=(TextView)view.findViewById(R.id.txvRecordOwner);
+            txvRecordOwner=(TextView)view.findViewById(R.id.txvRecordOwner);
+            txvDate=(TextView)view.findViewById(R.id.txvDate);
             imvBadgeAnswer= (ImageView) view.findViewById(R.id.imvBadgeAnswer);
             txvTime= (TextView) view.findViewById(R.id.txvTime);
             txvRange= (TextView) view.findViewById(R.id.txvRange);
+        }
+
+        public TextView getTxvRecordOwner() {
+            return txvRecordOwner;
+        }
+
+        public TextView getTxvDate() {
+            return txvDate;
         }
 
         public ImageView getImvBadgeAnswer() {
