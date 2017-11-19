@@ -2,7 +2,6 @@ package com.android2ee.basile.multiplication.view;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.HapticFeedbackConstants;
 import android.view.View;
@@ -20,10 +19,11 @@ import com.android2ee.basile.multiplication.cross.AchievementLevel;
 import com.android2ee.basile.multiplication.cross.KeyBoardCallBack;
 import com.android2ee.basile.multiplication.service.AssesmentService;
 import com.android2ee.basile.multiplication.view.dialog.CongratsDialog;
+import com.android2ee.basile.multiplication.view.mother.MotherActivity;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class AssessmentActivity extends AppCompatActivity implements KeyBoardCallBack{
+public class AssessmentActivity extends MotherActivity implements KeyBoardCallBack{
     private static final String TAG = "AssessmentActivity";
     /***********************************************************
      * Attributes
@@ -189,7 +189,7 @@ public class AssessmentActivity extends AppCompatActivity implements KeyBoardCal
     public void finish() {
         super.finish();
         if(!partyAborted){
-            AssesmentService.getInstance().save(score,(int)elapsedTime);
+            AssesmentService.getInstance().saveAsynch(score,(int)elapsedTime);
         }
     }
 

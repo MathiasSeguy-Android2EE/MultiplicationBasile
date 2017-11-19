@@ -28,6 +28,8 @@ allprojects {
         mavenCentral()
         //fabric
         maven { url 'https://maven.fabric.io/public' }
+        //for room
+        maven { url 'https://maven.google.com' }
         //architecture lib
         google()
     }

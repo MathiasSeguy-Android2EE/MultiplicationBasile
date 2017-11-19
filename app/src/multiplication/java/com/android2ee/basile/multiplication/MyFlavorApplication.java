@@ -31,12 +31,21 @@
 
 package com.android2ee.basile.multiplication;
 
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created by Mathias Seguy - Android2EE on 06/03/2017.
  */
 public class MyFlavorApplication extends MyApplication {
+    private static final String TAG = "MyFlavorApplication";
 
     @Override
     public void onCreate() {

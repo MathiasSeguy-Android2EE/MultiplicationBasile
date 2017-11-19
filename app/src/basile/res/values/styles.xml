@@ -10,6 +10,9 @@
     <style name="textview_basics" parent="TextAppearance.AppCompat.Medium">
         <item name="android:layout_marginBottom">5dp</item>
     </style>
+    <style name="textview_small" parent="textview_basics">
+        <item name="android:textSize">8sp</item>
+    </style>
     <style name="textview_title" parent="TextAppearance.AppCompat.Large">
         <item name="android:layout_marginBottom">5dp</item>
     </style>

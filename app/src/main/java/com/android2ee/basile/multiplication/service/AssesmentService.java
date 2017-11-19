@@ -31,6 +31,7 @@
 
 package com.android2ee.basile.multiplication.service;
 
+import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
@@ -38,10 +39,13 @@ import android.util.Log;
 import com.android2ee.basile.multiplication.MyApplication;
 import com.android2ee.basile.multiplication.R;
 import com.android2ee.basile.multiplication.cross.model.Score;
+import com.android2ee.basile.multiplication.dao.MyAppDatabase;
 import com.android2ee.basile.multiplication.dao.ScoreDao;
 
-import java.util.ArrayList;
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by Mathias Seguy - Android2EE on 01/03/2017.
@@ -118,63 +122,118 @@ public class AssesmentService {
      **********************************************************/
 
     ScoreDao scoreDao=null;
+    /***********************************************************
+     *  Saving
+     **********************************************************/
+    // /******************************************************************************************/
+    /** Method name: save
+     /* Description : Save the element into the database **********/
+    /* Param: Score score
+    /******************************************************************************************/
     /**
-     * Simple
-     * @param assessmentScore
+     * Should be called by the View
+     * @param score The score you want to save in DAO
      */
-    public void save(Score assessmentScore){
-        Log.e(TAG, "save() called with: assessmentScore = [" + assessmentScore + "]");
-        if(scoreDao==null){
-            scoreDao=new ScoreDao();
-        }
-        Score scoreToDelete=null;
-        //save only if better
-        boolean tableNotFound=true, betterRecord=false;
-        for (Score score : scoreDao.getRecordsTable()) {
-
-            Log.e(TAG, " compare with score = [" + score + "]");
-            //first insure it's for the same table
-            if(score.getMultiplicationTable()==assessmentScore.getMultiplicationTable()) {
-                tableNotFound=false;
-                Log.e(TAG, " table found");
-                if (score.getScore() < assessmentScore.getScore()){
-                    Log.e(TAG, " score.getScore() < assessmentScore.getScore()");
-                    betterRecord=true;
-                    scoreToDelete=score;
-                }else if (score.getScore() == assessmentScore.getScore()){
-                    Log.e(TAG, " score.getScore() == assessmentScore.getScore()");
-                    if(score.getElapsedtime()>assessmentScore.getElapsedtime()){
-                        Log.e(TAG, " score.getElapsedtime()>assessmentScore.getElapsedtime()");
-                        betterRecord=true;
-                        scoreToDelete=score;
-                    }
-                }
-            }
-        }
-        Log.e(TAG,"betterRecord="+betterRecord+", assessmentScore="+assessmentScore);
-        if(tableNotFound){
-            scoreDao.save(assessmentScore);
-        }
-        if(betterRecord){
-            scoreDao.save(assessmentScore);
-            scoreDao.delete(scoreToDelete);
-        }
+    public void saveAsynch(Score score) {
+        MyApplication.ins().getKeepAliveThreadsExecutor()
+                .execute(new RunnableSave(score));
     }
-    public void save(int score,int elapsedTime ){
-        if(scoreDao==null){
-            scoreDao=new ScoreDao();
-        }
-        save(new Score(elapsedTime,
+
+    /**
+     * Screate and save the associated score object
+     * @param score The value of the score
+     * @param elapsedTime The time to finish the game
+     */
+    public void saveAsynch(int score,int elapsedTime ){
+        getScoreDao();
+        saveAsynch(new Score(elapsedTime,
                 MyApplication.ins().getMaxMultiplicationValue(),
                 score,
                 MyApplication.ins().isAssesOnlyThisMultiplicationTable()));
     }
-    public ArrayList<Score> getRecordsTable(){
-        if(scoreDao==null){
-            scoreDao=new ScoreDao();
-        }
-        ArrayList<Score> ret=scoreDao.getRecordsTable();
-        Collections.sort(ret);
-        return ret;
+    /**
+     * Should only be called from a background thread (So only by another Service's method)
+     * Don't ever call this method from the UI Thread
+     *
+     * @param score The score you want to save in DAO
+     */
+    public void saveSync(Score score) {
+        // your code here
+        Log.e(TAG, "save() called with: assessmentScore = [" + score + "]");
+        getScoreDao();
+        scoreDao.save(score);
     }
+    /**
+     * This is the runnable that will send the work in a background thread
+     */
+    private class RunnableSave implements Runnable {
+        Score score;
+        public RunnableSave(Score score) {
+            this.score = score;
+        }
+
+        @Override
+        public void run() {
+            saveSync(score);
+        }
+    }
+
+    /***********************************************************
+     *  Querying Records
+     **********************************************************/
+    /******************************************************************************************/
+    /** Method name: getRecordsTable
+     * Description : Returns the list of all the score in the DB **********/
+    /******************************************************************************************/
+    /**
+     * Should be called by the View
+     * Returns the list of all the score in the DB
+     * Event to listen:
+     */
+    public void getRecordsTableAsynch() {
+        MyApplication.ins().getKeepAliveThreadsExecutor().execute(new RunnableGetRecordsTable());
+    }
+    /**
+     * Should only be called from a background thread (So only by another Service's method)
+     * Don't ever call this method from the UI Thread
+     *
+     * @return The list of Score
+     */
+    public List<Score> getRecordsTableSync() {
+        // your code here
+        getScoreDao();
+        List<Score> ret=scoreDao.getRecordsTable();
+        Collections.sort(ret);
+        //post to eventBus
+        EventBus.getDefault().post(ret);
+        return ret;
+        //and returning using an Event (like EventBus or Otto is a good idea)
+    }
+    /**
+     * This is the runnable that will send the work in a background thread
+     */
+    private class RunnableGetRecordsTable implements Runnable {
+
+        public RunnableGetRecordsTable() {
+        }
+
+        @Override
+        public void run() {
+            getRecordsTableSync();
+        }
+    }
+
+
+    /***********************************************************
+     *  Attributes
+     **********************************************************/
+
+
+    private void getScoreDao() {
+        if(scoreDao==null){
+            scoreDao= Room.databaseBuilder(MyApplication.ins(),
+                    MyAppDatabase.class, "database-name").build().getScoreDao();
+        }
+    }
+
 }

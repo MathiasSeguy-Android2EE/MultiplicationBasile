@@ -31,36 +31,54 @@
 
 package com.android2ee.basile.multiplication.cross.model;
 
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
+
 import com.android2ee.basile.multiplication.MyApplication;
 import com.android2ee.basile.multiplication.R;
-import com.orm.SugarRecord;
 
 /**
  * Created by Mathias Seguy - Android2EE on 05/03/2017.
  */
-public class Score extends SugarRecord implements Comparable<Score>{
+@Entity
+public class Score implements Comparable<Score>{
     /***********************************************************
-     *  Attributes
+     *  Constants
      **********************************************************/
     private static int NOY_SET=-1;
     private static boolean NOY_SET_BOOLEAN=false;
+    /***********************************************************
+     *  Attributes
+     **********************************************************/
+    @PrimaryKey(autoGenerate = true)
+    public int id;
     private int score=NOY_SET;
     private int elapsedtime=NOY_SET;
     private int multiplicationTable=NOY_SET;
     private boolean thisTableOnly=NOY_SET_BOOLEAN;
     private String name;
+    //When the records occured obtained by System.currentTimeMillis()
+    private long whenInMillis;
+    /***********************************************************
+    *  Constructors
+    **********************************************************/
 
     public Score() {
     }
-
     public Score(int elapsedtime, int multiplicationTable, int score, boolean thisTableOnly) {
+        this( elapsedtime,  multiplicationTable,  score,  thisTableOnly,MyApplication.ins().getString(R.string.score_owner));
+    }
+    public Score(int elapsedtime, int multiplicationTable, int score, boolean thisTableOnly,String name) {
         this.elapsedtime = elapsedtime;
         this.multiplicationTable = multiplicationTable;
         this.score = score;
         this.thisTableOnly = thisTableOnly;
-        name= MyApplication.ins().getString(R.string.score_owner);
+        this.name=name;
+        whenInMillis=System.currentTimeMillis();
     }
-
+    /***********************************************************
+    *  Getters/Setters
+    **********************************************************/
     public int getMultiplicationTable() {
         return multiplicationTable;
     }
@@ -101,20 +119,38 @@ public class Score extends SugarRecord implements Comparable<Score>{
         this.elapsedtime = elapsedtime;
     }
 
-    @Override
-    public String toString() {
-        final StringBuffer sb = new StringBuffer("Score{");
-        sb.append("elapsedtime=").append(elapsedtime);
-        sb.append(", score=").append(score);
-        sb.append(", multiplicationTable=").append(multiplicationTable);
-        sb.append(", thisTableOnly=").append(thisTableOnly);
-        sb.append(", name='").append(name).append('\'');
-        sb.append('}');
-        return sb.toString();
+    public int getId() {
+        return id;
     }
-    public int compareTo(Score otherScore) {
 
-        return this.getMultiplicationTable()-otherScore.getMultiplicationTable();
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public long getWhenInMillis() {
+        return whenInMillis;
+    }
+
+    public void setWhenInMillis(long whenInMillis) {
+        this.whenInMillis = whenInMillis;
+    }
+
+    /***********************************************************
+     *  Comparables
+     **********************************************************/
+    public int compareTo(Score otherScore) {
+        if(this.getMultiplicationTable()!=otherScore.getMultiplicationTable()){
+            //highest table first
+            return otherScore.getMultiplicationTable()-this.getMultiplicationTable();
+        }else{
+           if(this.getScore()!=otherScore.getScore()){
+               //highest score first
+               return otherScore.getScore()-this.getScore();
+           }else{
+               //smaller time first
+               return this.getElapsedtime()-otherScore.getElapsedtime();
+           }
+        }
 
     }
 

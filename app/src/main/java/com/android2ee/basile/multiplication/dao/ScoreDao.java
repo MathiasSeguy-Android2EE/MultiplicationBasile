@@ -31,29 +31,26 @@
 
 package com.android2ee.basile.multiplication.dao;
 
+import android.arch.persistence.room.Dao;
+import android.arch.persistence.room.Delete;
+import android.arch.persistence.room.Insert;
+import android.arch.persistence.room.Query;
+
 import com.android2ee.basile.multiplication.cross.model.Score;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Mathias Seguy - Android2EE on 05/03/2017.
  */
-public class ScoreDao {
-    /**
-     * Simple
-     * @param assessmentScore
-     */
-    public void save(Score assessmentScore){
-        if(assessmentScore!=null)
-        assessmentScore.save();
-    }
+@Dao
+public interface ScoreDao {
+    @Insert
+    public void save(Score assessmentScore);
 
-    public ArrayList<Score> getRecordsTable(){
-        return (ArrayList<Score>) Score.listAll(Score.class);
-    }
+    @Query("SELECT * FROM score")
+    public List<Score> getRecordsTable();
 
-    public void delete(Score score){
-        if(score!=null)
-        score.delete();
-    }
+    @Delete
+    public void delete(Score score);
 }
