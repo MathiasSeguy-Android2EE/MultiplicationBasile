@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
@@ -58,7 +59,7 @@
             android:id="@+id/imvScoreBadge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@mipmap/ic_badge_hero"/>
+            app:srcCompat="@mipmap/ic_badge_hero"/>
         <TextView
             android:id="@+id/txvQuestionNumber"
             style="@style/textview_basics"
@@ -90,7 +91,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="25dp"
-            android:src="@drawable/ic_check" />
+            app:srcCompat="@drawable/ic_check" />
     </LinearLayout>
 
     <LinearLayout
@@ -116,7 +117,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="25dp"
-            android:src="@drawable/ic_check" />
+            app:srcCompat="@drawable/ic_check" />
 
 
     </LinearLayout>
@@ -134,7 +135,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/background_shape"
-            android:src="@drawable/ic_arrow_forward"
+            app:srcCompat="@drawable/ic_arrow_forward"
             android:visibility="gone" />
 
         <include layout="@layout/keyboard_shrinked" />

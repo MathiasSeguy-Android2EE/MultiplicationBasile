@@ -10,6 +10,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.android2ee.basile.multiplication.view.MainActivity"
     android:weightSum="1">
 
@@ -28,7 +29,7 @@
         <ImageView
             android:layout_width="285dp"
             android:layout_height="285dp"
-            android:src="@drawable/main_act_keyboard_background"/>
+            app:srcCompat="@drawable/main_act_keyboard_background"/>
 
         <include layout="@layout/keyboard"
             android:visibility="visible" />
