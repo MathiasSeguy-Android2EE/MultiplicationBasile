@@ -39,12 +39,15 @@ import android.os.Message;
 import android.util.Log;
 
 import com.android2ee.basile.multiplication.service.AssesmentService;
+import com.crashlytics.android.Crashlytics;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import io.fabric.sdk.android.Fabric;
 
 /**
  * Created by Mathias Seguy - Android2EE on 01/03/2017.
@@ -71,6 +74,7 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Fabric.with(this, new Crashlytics());
         instance=this;
         assService=AssesmentService.getInstance();
         Log.e("MyAppInitializer","Second choices, a log is enough to prove the concept: MyApplication");

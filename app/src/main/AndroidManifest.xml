@@ -10,20 +10,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <!-- SUGARORM initialization -->
-        <meta-data
-            android:name="DATABASE"
-            android:value="assessment.db" />
-        <meta-data
-            android:name="VERSION"
-            android:value="1" />
-        <meta-data
-            android:name="QUERY_LOG"
-            android:value="true" />
-        <meta-data
-            android:name="DOMAIN_PACKAGE_NAME"
-            android:value="com.android2ee.basile.multiplication.cross.model" />
-
         <!-- Application decsription -->
         <activity android:name=".view.MainActivity">
             <intent-filter>
@@ -34,6 +20,10 @@
         </activity>
         <activity android:name=".view.AssessmentActivity" />
         <activity android:name=".view.records.RecordsActivity"></activity>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="39866e36af5c6630aa5f1300338ad9c6005c1e3d" />
     </application>
 
+    <uses-permission android:name="android.permission.INTERNET" />
 </manifest>

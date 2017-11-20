@@ -8,6 +8,10 @@ apply from: 'gradle/var_definition.gradle'
  */
 apply plugin: 'jacoco'
 /**
+ * For Fabrics
+ */
+apply plugin: 'io.fabric'
+/**
  * Our file to enable code coverage using JAvaCOdeCOverage
  */
 apply from: 'gradle/toolsReporter/jacoco.gradle'
